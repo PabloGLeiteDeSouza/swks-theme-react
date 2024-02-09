@@ -1,0 +1,8 @@
+*.log
+.DS_Store
+node_modules
+.cache
+dist
+README_LIB.md
+.npmignore
+package-lock.json
