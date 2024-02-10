@@ -1,5 +1,5 @@
 {
-    "version": "0.1.10",
+    "version": "0.1.11",
     "license": "MIT",
     "main": "dist/index.js",
     "typings": "dist/index.d.ts",
@@ -60,5 +60,8 @@
         "tsdx": "^0.14.1",
         "tslib": "^2.6.2",
         "typescript": "^3.9.10"
+    },
+    "dependencies": {
+        "react-cookie": "^7.0.2"
     }
 }
