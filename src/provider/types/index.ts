@@ -9,7 +9,9 @@ export type ThemeContextType = {
   theme: string;
   setTheme: (theme: string) => void;
   toggleThemeDefault: () => void;
+  toggleThemeDefaultDOM: () => void;
   toggleThemeCustom: (theme: string[]) => void;
+  toggleThemeCustomDOM: (theme: string[]) => void;
   EventConfig?: EventConfigType;
 };
 

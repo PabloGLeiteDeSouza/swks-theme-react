@@ -1,12 +1,13 @@
 import { useContext } from 'react';
 import { ThemeContext } from './provider';
 
-export default function useTheme() {
+export default function useThemeObject() {
   const context = useContext(ThemeContext);
   return {
     theme: context.theme,
     setTheme: context.setTheme,
-    toggleThemeDefault: context.toggleThemeDefault,
-    toggleThemeCustom: context.toggleThemeCustom,
+    toggleThemeDefault: context.toggleThemeDefaultDOM,
+    toggleThemeCustom: context.toggleThemeCustomDOM,
+    EventConfig: context.EventConfig,
   };
 }

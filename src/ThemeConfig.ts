@@ -1,6 +1,5 @@
-import { ConfigType } from "./provider/types";
+import { ConfigType } from './provider/types';
 
-
-export default function ThemeConfig(config : ConfigType){
-    return config ? config : {};
+export default function ThemeConfig(config: ConfigType) {
+  return config ? config : {};
 }

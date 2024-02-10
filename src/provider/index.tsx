@@ -7,7 +7,9 @@ export const ThemeContext = createContext<ThemeContextType>({
   theme: 'light',
   setTheme: () => {},
   toggleThemeDefault: () => {},
+  toggleThemeDefaultDOM: () => {},
   toggleThemeCustom: () => {},
+  toggleThemeCustomDOM: () => {},
   EventConfig: {
     setThemeConfig: { type: 'attribute', value: 'data-set-theme' },
     chooseThemeConfig: { type: 'attribute', value: 'data-choose-theme' },
@@ -23,7 +25,6 @@ export const ThemeContext = createContext<ThemeContextType>({
 });
 
 export function ThemeProvider({ children, config }: ThemeProviderProps) {
-
   const [theme, SetTheme] = useState('light'),
     DefaultTheme = config.DefaultTheme,
     { getCookie, setCookie } = useCookie(),
@@ -48,6 +49,10 @@ export function ThemeProvider({ children, config }: ThemeProviderProps) {
   );
 
   const toggleThemeDefault = useCallback(() => {
+    return setTheme(theme === 'light' ? 'dark' : 'light');
+  }, [setTheme, theme]);
+
+  const toggleThemeDefaultDOM = useCallback(() => {
     if (cookieIsActive) {
       return setTheme(getCookie(StorageKey) === 'light' ? 'dark' : 'light');
     }
@@ -57,6 +62,21 @@ export function ThemeProvider({ children, config }: ThemeProviderProps) {
   }, [StorageKey, cookieIsActive, setTheme, getCookie]);
 
   const toggleThemeCustom = useCallback(
+    (themes: string[]) => {
+      const index = themes.findIndex(e => {
+        return e === theme;
+      });
+
+      if (index + 1 < themes.length) {
+        setTheme(themes[index + 1]);
+      } else {
+        setTheme(themes[0]);
+      }
+    },
+    [setTheme, theme]
+  );
+
+  const toggleThemeCustomDOM = useCallback(
     (themes: string[]) => {
       const index = themes.findIndex(e => {
         if (cookieIsActive) {
@@ -78,7 +98,9 @@ export function ThemeProvider({ children, config }: ThemeProviderProps) {
     Start({ setTheme, toggleThemeCustom, toggleThemeDefault, EventConfig });
   }, [setTheme, toggleThemeCustom, toggleThemeDefault, EventConfig]);
   const startCallback = useCallback(() => {
-    const StoredTheme = localStorage.getItem(StorageKey);
+    const StoredTheme = cookieIsActive
+      ? getCookie(StorageKey)
+      : localStorage.getItem(StorageKey);
     const DocumentTheme = document.documentElement.getAttribute(
       DocumentAttributeKey
     );
@@ -94,7 +116,14 @@ export function ThemeProvider({ children, config }: ThemeProviderProps) {
       return;
     }
     setTheme('light');
-  }, [DefaultTheme, setTheme, StorageKey, DocumentAttributeKey]);
+  }, [
+    DefaultTheme,
+    setTheme,
+    StorageKey,
+    DocumentAttributeKey,
+    cookieIsActive,
+    getCookie,
+  ]);
 
   useEffect(() => {
     StartEventsCallback();
@@ -107,7 +136,9 @@ export function ThemeProvider({ children, config }: ThemeProviderProps) {
         theme,
         setTheme,
         toggleThemeDefault,
+        toggleThemeDefaultDOM,
         toggleThemeCustom,
+        toggleThemeCustomDOM,
         EventConfig,
       }}
     >

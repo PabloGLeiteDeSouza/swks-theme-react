@@ -2,7 +2,7 @@
 
 Uma bilioteca de temas voltada para [React](https://www.npmjs.com/package/react), [Nextjs](https://nextjs.org/) e demais estruturas, frameworks UI's com suporte ao React.
 
-### Nota
+## Nota
 
 Esta biblioteca atende a diversos tipos de UI's, mas sempre recomendamos validar se a UI escolhida ja tem suporte a gerenciamento de temas.
 Pois cada UI tem a sua maneira de tratar os temas, prove-los e gerencia-los (Caso haja um provedor de temas).
@@ -16,10 +16,11 @@ npm i swks-theme-react
 
 ## Uso em sua aplicação
 
-Para usar nossa biblioteca é necessário que na raiz de sua aplicação seja incluido o component `<ThemeProvider>` . <br>
-Para atribuir o valor de config recomundamos usar o ThemeConfig para passar o valor da constante que recebera a configuração destinada ao `<ThemeProvider>`.
+Para usar nossa biblioteca é necessário que na raiz de sua aplicação seja incluido o component `ThemeProvider` . <br>
+Para atribuir o valor de config recomundamos usar o ThemeConfig para passar o valor da constante que recebera a configuração destinada ao `ThemeProvider`.<br>
 
-```
+
+```TS
     // config.ts or config.js
 
     const config = ThemeConfig({});
@@ -27,9 +28,10 @@ Para atribuir o valor de config recomundamos usar o ThemeConfig para passar o va
     export default config;
 ```
 
+Inserção do provider dentro da raiz da aplicação: 
 
-```
-    // _app.tsx(_app.jsx) or app.tsx(app.jsx) in next app router
+```TSX
+    // this exemple using next pages _app.tsx(.jsx)
 
     export default function App({ Component pageProps }: AppProps) {
         return (
@@ -40,5 +42,36 @@ Para atribuir o valor de config recomundamos usar o ThemeConfig para passar o va
                 <ChangeTheme/>
             </ThemeProvider>
         );
+    }
+```
+
+Configuração dos eventos DOM, esta biblioteca usa como parametros para eventos de componentes: `name`, `class`, `id`, `attribute`.
+As configurações padrões são para todos os tipos de troca de tema em attributo, para ativar a ultilização desses padrões que devem ser estabelecidos na contante config do `ThemeProvider` basta chamar a função start passando o ObjetoTema, cujo mesmo e retorno da função `useThemeObject` isso dentro do `useEffect`, segue o exemplo abaixo:
+
+```TSX
+    export default function toggleTheme(){
+        const ThemeObject = useThemeObject();
+
+        useEffect(() => {
+            Start(ThemeObject)
+        }, []);
+
+        return (<button data-toggle-default-theme ></button>);
+    }
+```
+## Observação
+A função Start é necessária apenas quando se vai usar a troca de tema atraves do name id attributo ou classe.
+
+Pode ser usado também os métodos providos pelo `useTheme`, sendo os métodos: `setTheme`, `toggleThemeDefault`, `toggleThemeCustom`.<br>
+Segue o exemplo abaxio:
+```TSX
+    export default function toggleTheme() {
+        const {toggleDefaultTheme, theme} = useTheme();
+
+        return(
+            <button onclick={toggleDefaultTheme} >
+                {theme}
+            </button>
+        )
     }
 ```
