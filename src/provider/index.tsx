@@ -1,6 +1,6 @@
 import React, { createContext, useCallback, useEffect, useState } from 'react';
 import { ThemeContextType, ThemeProviderProps } from './types';
-import { useCookies } from 'react-cookie';
+import useCookie from '../useCookie';
 
 export const ThemeContext = createContext<ThemeContextType>({
   theme: 'light',
@@ -24,9 +24,10 @@ export const ThemeContext = createContext<ThemeContextType>({
 });
 
 export function ThemeProvider({ children, config }: ThemeProviderProps) {
-  const [theme, SetTheme] = useState('light'),
+  const [theme, SetTheme] = useState<string>('light'),
+    [isLoading, setIsLoading] = useState<boolean>(true),
     DefaultTheme = config.DefaultTheme,
-    [cookies, setCookie] = useCookies(),
+    { setCookie, getCookie } = useCookie(),
     cookieIsActive = config.cookieIsActive ? config.cookieIsActive : false,
     StorageKey = config.StorageKey ? config.StorageKey : 'theme',
     DocumentAttributeKey = config.DocumentAttributeKey
@@ -36,29 +37,64 @@ export function ThemeProvider({ children, config }: ThemeProviderProps) {
 
   const setTheme = useCallback(
     (theme: string) => {
+      if (theme) {
+        if (cookieIsActive) {
+          setCookie(StorageKey, theme);
+        } else {
+          localStorage.setItem(StorageKey, theme);
+        }
+        document.documentElement.setAttribute(DocumentAttributeKey, theme);
+        SetTheme(theme);
+      } else {
+        let tema: string | null;
+        if (cookieIsActive) {
+          tema = getCookie(StorageKey);
+        } else {
+          tema = localStorage.getItem(StorageKey);
+        }
+        if (tema) {
+          document.documentElement.setAttribute(DocumentAttributeKey, tema);
+          SetTheme(tema);
+        }
+      }
+    },
+    [
+      StorageKey,
+      SetTheme,
+      DocumentAttributeKey,
+      cookieIsActive,
+      getCookie,
+      setCookie,
+    ]
+  );
+
+  const setThemeDOM = (theme: string) => {
+    if (theme) {
       if (cookieIsActive) {
+        console.log('setando o tema: ' + theme);
         setCookie(StorageKey, theme);
       } else {
         localStorage.setItem(StorageKey, theme);
       }
       document.documentElement.setAttribute(DocumentAttributeKey, theme);
       SetTheme(theme);
-    },
-    [StorageKey, DocumentAttributeKey, cookieIsActive, setCookie]
-  );
+    } else {
+      let tema: string | null;
+      if (cookieIsActive) {
+        tema = getCookie(StorageKey);
+      } else {
+        tema = localStorage.getItem(StorageKey);
+      }
+      if (tema) {
+        document.documentElement.setAttribute(DocumentAttributeKey, tema);
+        SetTheme(tema);
+      }
+    }
+  };
 
   const toggleThemeDefault = useCallback(() => {
     return setTheme(theme === 'light' ? 'dark' : 'light');
-  }, [setTheme, theme]);
-
-  const toggleThemeDefaultDOM = useCallback(() => {
-    if (cookieIsActive) {
-      return setTheme(cookies[StorageKey] === 'light' ? 'dark' : 'light');
-    }
-    return setTheme(
-      localStorage.getItem(StorageKey) === 'light' ? 'dark' : 'light'
-    );
-  }, [StorageKey, cookieIsActive, setTheme, cookies]);
+  }, [theme, setTheme]);
 
   const toggleThemeCustom = useCallback(
     (themes: string[]) => {
@@ -72,58 +108,77 @@ export function ThemeProvider({ children, config }: ThemeProviderProps) {
         setTheme(themes[0]);
       }
     },
-    [setTheme, theme]
+    [theme, setTheme]
   );
 
-  const toggleThemeCustomDOM = useCallback(
-    (themes: string[]) => {
-      const index = themes.findIndex(e => {
-        if (cookieIsActive) {
-          return e === cookies[StorageKey];
-        }
-        return e === localStorage.getItem(StorageKey);
-      });
+  const toggleThemeDefaultDOM = () => {
+    const theme = cookieIsActive
+      ? getCookie(StorageKey) === 'light'
+        ? 'dark'
+        : 'light'
+      : localStorage.getItem(StorageKey) === 'light'
+      ? 'dark'
+      : 'light';
+    setThemeDOM(theme);
+  };
 
-      if (index + 1 < themes.length) {
-        setTheme(themes[index + 1]);
-      } else {
-        setTheme(themes[0]);
+  const toggleThemeCustomDOM = (themes: string[]) => {
+    const index = themes.findIndex(e => {
+      if (cookieIsActive) {
+        return e === getCookie(StorageKey);
       }
-    },
-    [StorageKey, cookieIsActive, setTheme, cookies]
-  );
-
-  const startCallback = useCallback(() => {
-    const StoredTheme = cookieIsActive
-      ? cookies[StorageKey]
-      : localStorage.getItem(StorageKey);
-    const DocumentTheme = document.documentElement.getAttribute(
-      DocumentAttributeKey
-    );
-    if (StoredTheme) {
-      setTheme(StoredTheme);
+      return e === localStorage.getItem(StorageKey);
+    });
+    if (index + 1 < themes.length) {
+      setThemeDOM(themes[index + 1]);
+      console.log(themes[index + 1]);
+    } else {
+      setThemeDOM(themes[0]);
+      console.log('2');
     }
-    if (DefaultTheme) {
-      setTheme(DefaultTheme);
-      return;
-    }
-    if (DocumentTheme) {
-      setTheme(DocumentTheme);
-      return;
-    }
-    setTheme('light');
-  }, [
-    DefaultTheme,
-    setTheme,
-    StorageKey,
-    DocumentAttributeKey,
-    cookieIsActive,
-    cookies,
-  ]);
+  };
 
   useEffect(() => {
-    startCallback();
-  }, [startCallback]);
+    function Start() {
+      const StoredTheme = cookieIsActive
+        ? getCookie(StorageKey)
+        : localStorage.getItem(StorageKey);
+      const DocumentTheme = document.documentElement.getAttribute(
+        DocumentAttributeKey
+      );
+      console.log(cookieIsActive);
+      if (StoredTheme) {
+        setTheme(StoredTheme);
+        setIsLoading(false);
+        return;
+      }
+      if (DefaultTheme) {
+        setTheme(DefaultTheme);
+        setIsLoading(false);
+        return;
+      }
+      if (DocumentTheme) {
+        setTheme(DocumentTheme);
+        setIsLoading(false);
+        return;
+      }
+      setTheme('light');
+      setIsLoading(false);
+      return;
+    }
+    if (isLoading) {
+      Start();
+    }
+  }, [
+    DefaultTheme,
+    DocumentAttributeKey,
+    StorageKey,
+    cookieIsActive,
+    setTheme,
+    getCookie,
+    isLoading,
+    setIsLoading,
+  ]);
 
   return (
     <ThemeContext.Provider
