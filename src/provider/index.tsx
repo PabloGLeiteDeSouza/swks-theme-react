@@ -1,4 +1,3 @@
-'use clinet';
 import React, { createContext, useCallback, useEffect, useState } from 'react';
 import { ThemeContextType, ThemeProviderProps } from './types';
 
