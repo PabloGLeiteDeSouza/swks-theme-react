@@ -1,7 +1,7 @@
-import { render, act, renderHook } from '@testing-library/react'
-import '@testing-library/jest-dom'
-import { ThemeContext, ThemeProvider } from '../src'
-import React from 'react'
+import { render, act, renderHook } from '@testing-library/react';
+import '@testing-library/jest-dom';
+import { ThemeContext, ThemeProvider } from '../src';
+import React from 'react';
 
 describe('ThemeProvider', () => {
   it('should render without crashing', () => {
@@ -16,7 +16,9 @@ describe('ThemeProvider', () => {
   it('should toggle theme', () => {
     const { result } = renderHook(() => React.useContext(ThemeContext), {
       wrapper: ({ children }) => (
-        <ThemeProvider config={{ DefaultTheme: 'light' }}>{children}</ThemeProvider>
+        <ThemeProvider config={{ DefaultTheme: 'light' }}>
+          {children}
+        </ThemeProvider>
       ),
     });
 

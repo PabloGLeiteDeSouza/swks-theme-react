@@ -99,12 +99,7 @@ export function ThemeProvider({ children, config }: ThemeProviderProps) {
       return;
     }
     setTheme('light');
-  }, [
-    DefaultTheme,
-    setTheme,
-    StorageKey,
-    DocumentAttributeKey,
-  ]);
+  }, [DefaultTheme, setTheme, StorageKey, DocumentAttributeKey]);
 
   useEffect(() => {
     startCallback();
