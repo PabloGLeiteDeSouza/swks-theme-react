@@ -1,3 +1,4 @@
+'use clinet';
 import React, { createContext, useCallback, useEffect, useState } from 'react';
 import { ThemeContextType, ThemeProviderProps } from './types';
 
@@ -103,9 +104,11 @@ export function ThemeProvider({ children, config }: ThemeProviderProps) {
   }, [DefaultTheme, setTheme, StorageKey, DocumentAttributeKey]);
 
   useEffect(() => {
-    startCallback();
-    setIsLoadedTheme(true);
-  }, [startCallback]);
+    if (!isLoadedTheme) {
+      startCallback();
+      setIsLoadedTheme(true);
+    }
+  }, [startCallback, [isLoadedTheme]]);
 
   if (!isLoadedTheme) {
     return config.LoadingScreen ? (
