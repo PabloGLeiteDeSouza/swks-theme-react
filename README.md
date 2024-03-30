@@ -1,11 +1,13 @@
 # swks-theme-react
 
-Uma bilioteca de temas voltada para [React](https://www.npmjs.com/package/react), [Nextjs](https://nextjs.org/) e demais estruturas, frameworks UI's com suporte ao React.
+Uma bilioteca de temas voltada para [React](https://www.npmjs.com/package/react), pode ser usada em [Nextjs](https://nextjs.org/) e demais estruturas, frameworks UI's com suporte ao React.
 
 ## Nota
 
 Esta biblioteca atende a diversos tipos de UI's, mas sempre recomendamos validar se a UI escolhida ja tem suporte a gerenciamento de temas.
 Pois cada UI tem a sua maneira de tratar os temas, prove-los e gerencia-los (Caso haja um provedor de temas).
+
+Vale destacar que esta biblioteca faz o salvamento dos temas usando `localStorage` e não os cookies, por inicialmente a estrutura da biblioteca ser feita com apenas o react, então vale ressaltar que no caso de uso do [Nextjs](https://nextjs.org) por ele realizar a renderização no servidor é necessario algumas abordagens caso haja problemas relacionado ao uso do tema padrão do dispositivo, que é o padrão caso não seja informado um tema padrão.
 
 ## Para usar
 

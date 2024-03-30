@@ -1,6 +1,5 @@
 import React, { createContext, useCallback, useEffect, useState } from 'react';
 import { ThemeContextType, ThemeProviderProps } from './types';
-import { useCookies } from 'react-cookie';
 
 export const ThemeContext = createContext<ThemeContextType>({
   theme: 'light',
@@ -26,8 +25,6 @@ export const ThemeContext = createContext<ThemeContextType>({
 export function ThemeProvider({ children, config }: ThemeProviderProps) {
   const [theme, SetTheme] = useState('light'),
     DefaultTheme = config.DefaultTheme,
-    [cookies, setCookie] = useCookies(),
-    cookieIsActive = config.cookieIsActive ? config.cookieIsActive : false,
     StorageKey = config.StorageKey ? config.StorageKey : 'theme',
     DocumentAttributeKey = config.DocumentAttributeKey
       ? config.DocumentAttributeKey
@@ -36,29 +33,22 @@ export function ThemeProvider({ children, config }: ThemeProviderProps) {
 
   const setTheme = useCallback(
     (theme: string) => {
-      if (cookieIsActive) {
-        setCookie(StorageKey, theme);
-      } else {
-        localStorage.setItem(StorageKey, theme);
-      }
+      localStorage.setItem(StorageKey, theme);
       document.documentElement.setAttribute(DocumentAttributeKey, theme);
       SetTheme(theme);
     },
-    [StorageKey, DocumentAttributeKey, cookieIsActive, setCookie]
+    [StorageKey, DocumentAttributeKey]
   );
 
   const toggleThemeDefault = useCallback(() => {
     return setTheme(theme === 'light' ? 'dark' : 'light');
   }, [setTheme, theme]);
 
-  const toggleThemeDefaultDOM = useCallback(() => {
-    if (cookieIsActive) {
-      return setTheme(cookies[StorageKey] === 'light' ? 'dark' : 'light');
-    }
-    return setTheme(
-      localStorage.getItem(StorageKey) === 'light' ? 'dark' : 'light'
-    );
-  }, [StorageKey, cookieIsActive, setTheme, cookies]);
+  const toggleThemeDefaultDOM = useCallback(
+    () =>
+      setTheme(localStorage.getItem(StorageKey) === 'light' ? 'dark' : 'light'),
+    [StorageKey, setTheme]
+  );
 
   const toggleThemeCustom = useCallback(
     (themes: string[]) => {
@@ -78,9 +68,6 @@ export function ThemeProvider({ children, config }: ThemeProviderProps) {
   const toggleThemeCustomDOM = useCallback(
     (themes: string[]) => {
       const index = themes.findIndex(e => {
-        if (cookieIsActive) {
-          return e === cookies[StorageKey];
-        }
         return e === localStorage.getItem(StorageKey);
       });
 
@@ -90,13 +77,11 @@ export function ThemeProvider({ children, config }: ThemeProviderProps) {
         setTheme(themes[0]);
       }
     },
-    [StorageKey, cookieIsActive, setTheme, cookies]
+    [StorageKey, setTheme]
   );
 
   const startCallback = useCallback(() => {
-    const StoredTheme = cookieIsActive
-      ? cookies[StorageKey]
-      : localStorage.getItem(StorageKey);
+    const StoredTheme = localStorage.getItem(StorageKey);
     const DocumentTheme = document.documentElement.getAttribute(
       DocumentAttributeKey
     );
@@ -117,8 +102,6 @@ export function ThemeProvider({ children, config }: ThemeProviderProps) {
     setTheme,
     StorageKey,
     DocumentAttributeKey,
-    cookieIsActive,
-    cookies,
   ]);
 
   useEffect(() => {

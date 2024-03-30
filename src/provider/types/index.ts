@@ -19,7 +19,6 @@ export type EventConfigActiveType = 'attribute' | 'class' | 'name' | 'id';
 
 export type ConfigType = {
   DefaultTheme?: string;
-  cookieIsActive?: boolean;
   StorageKey?: string;
   DocumentAttributeKey?: string;
   EventConfig?: EventConfigType;
