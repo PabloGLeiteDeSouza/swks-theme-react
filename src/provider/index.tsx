@@ -108,24 +108,22 @@ export function ThemeProvider({ children, config }: ThemeProviderProps) {
   }, [startCallback]);
 
   if (!isLoadedTheme) {
-    return (
-      config.LoadingScreen ? (
-        <config.LoadingScreen />
-      ) : (
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
-        >
-          <div>
-            <p>Loading...</p>
-          </div>
+    return config.LoadingScreen ? (
+      <config.LoadingScreen />
+    ) : (
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        <div>
+          <p>Loading...</p>
         </div>
-      )
-    )
+      </div>
+    );
   }
 
   return (
@@ -141,7 +139,7 @@ export function ThemeProvider({ children, config }: ThemeProviderProps) {
         EventConfig,
       }}
     >
-        {children}
+      {children}
     </ThemeContext.Provider>
   );
 }
