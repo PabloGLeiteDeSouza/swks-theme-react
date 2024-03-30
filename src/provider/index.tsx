@@ -108,7 +108,7 @@ export function ThemeProvider({ children, config }: ThemeProviderProps) {
       startCallback();
       setIsLoadedTheme(true);
     }
-  }, [startCallback, [isLoadedTheme]]);
+  }, [startCallback, isLoadedTheme]);
 
   if (!isLoadedTheme) {
     return config.LoadingScreen ? (
