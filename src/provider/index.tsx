@@ -2,7 +2,7 @@ import React, { createContext, useCallback, useEffect, useState } from 'react';
 import { ThemeContextType, ThemeProviderProps } from './types';
 
 export const ThemeContext = createContext<ThemeContextType>({
-  isLoadedTheme: true,
+  isLoadedTheme: false,
   theme: 'light',
   setTheme: () => {},
   toggleThemeDefault: () => {},
@@ -25,7 +25,7 @@ export const ThemeContext = createContext<ThemeContextType>({
 
 export function ThemeProvider({ children, config }: ThemeProviderProps) {
   const [theme, SetTheme] = useState('light'),
-    [isLoadedTheme, setIsLoadedTheme] = useState<boolean>(true),
+    [isLoadedTheme, setIsLoadedTheme] = useState<boolean>(false),
     DefaultTheme = config.DefaultTheme,
     StorageKey = config.StorageKey ? config.StorageKey : 'theme',
     DocumentAttributeKey = config.DocumentAttributeKey
@@ -89,6 +89,7 @@ export function ThemeProvider({ children, config }: ThemeProviderProps) {
     );
     if (StoredTheme) {
       setTheme(StoredTheme);
+      return;
     }
     if (DefaultTheme) {
       setTheme(DefaultTheme);
@@ -103,7 +104,7 @@ export function ThemeProvider({ children, config }: ThemeProviderProps) {
 
   useEffect(() => {
     startCallback();
-    setIsLoadedTheme(false);
+    setIsLoadedTheme(true);
   }, [startCallback]);
 
   return (
@@ -119,7 +120,24 @@ export function ThemeProvider({ children, config }: ThemeProviderProps) {
         EventConfig,
       }}
     >
-      {children}
+      {isLoadedTheme ? (
+        children
+      ) : config.LoadingScreen ? (
+        <config.LoadingScreen />
+      ) : (
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <div>
+            <p>Loading...</p>
+          </div>
+        </div>
+      )}
     </ThemeContext.Provider>
   );
 }

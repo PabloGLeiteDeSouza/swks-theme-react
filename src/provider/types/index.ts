@@ -23,6 +23,7 @@ export type ConfigType = {
   StorageKey?: string;
   DocumentAttributeKey?: string;
   EventConfig?: EventConfigType;
+  LoadingScreen?: React.FC;
 };
 
 export type ThemeProviderProps = {
