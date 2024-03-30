@@ -107,22 +107,9 @@ export function ThemeProvider({ children, config }: ThemeProviderProps) {
     setIsLoadedTheme(true);
   }, [startCallback]);
 
-  return (
-    <ThemeContext.Provider
-      value={{
-        isLoadedTheme,
-        theme,
-        setTheme,
-        toggleThemeDefault,
-        toggleThemeDefaultDOM,
-        toggleThemeCustom,
-        toggleThemeCustomDOM,
-        EventConfig,
-      }}
-    >
-      {isLoadedTheme ? (
-        children
-      ) : config.LoadingScreen ? (
+  if (!isLoadedTheme) {
+    return (
+      config.LoadingScreen ? (
         <config.LoadingScreen />
       ) : (
         <div
@@ -137,7 +124,24 @@ export function ThemeProvider({ children, config }: ThemeProviderProps) {
             <p>Loading...</p>
           </div>
         </div>
-      )}
+      )
+    )
+  }
+
+  return (
+    <ThemeContext.Provider
+      value={{
+        isLoadedTheme,
+        theme,
+        setTheme,
+        toggleThemeDefault,
+        toggleThemeDefaultDOM,
+        toggleThemeCustom,
+        toggleThemeCustomDOM,
+        EventConfig,
+      }}
+    >
+        {children}
     </ThemeContext.Provider>
   );
 }
