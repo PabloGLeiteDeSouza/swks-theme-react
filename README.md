@@ -9,6 +9,7 @@ Pois cada UI tem a sua maneira de tratar os temas, prove-los e gerencia-los (Cas
 
 Vale destacar que esta biblioteca faz o salvamento dos temas usando `localStorage` e não os cookies, por inicialmente a estrutura da biblioteca ser feita com apenas o react, então vale ressaltar que no caso de uso do [Nextjs](https://nextjs.org) por ele realizar a renderização no servidor é necessario algumas abordagens caso haja problemas relacionado ao uso do tema padrão do dispositivo, que é o padrão caso não seja informado um tema padrão.
 
+
 ## Para usar
 
 Para usar nossa biblioteca é muito simples basta dentro da pasta de seu projeto executar o comando no Terminal do seu sistema operacional.
