@@ -6,6 +6,7 @@ export type EventConfigType = {
 };
 
 export type ThemeContextType = {
+  isLoadedTheme: boolean;
   theme: string;
   setTheme: (theme: string) => void;
   toggleThemeDefault: () => void;

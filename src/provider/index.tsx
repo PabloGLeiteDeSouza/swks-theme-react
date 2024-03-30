@@ -2,6 +2,7 @@ import React, { createContext, useCallback, useEffect, useState } from 'react';
 import { ThemeContextType, ThemeProviderProps } from './types';
 
 export const ThemeContext = createContext<ThemeContextType>({
+  isLoadedTheme: true,
   theme: 'light',
   setTheme: () => {},
   toggleThemeDefault: () => {},
@@ -24,6 +25,7 @@ export const ThemeContext = createContext<ThemeContextType>({
 
 export function ThemeProvider({ children, config }: ThemeProviderProps) {
   const [theme, SetTheme] = useState('light'),
+    [isLoadedTheme, setIsLoadedTheme] = useState<boolean>(true),
     DefaultTheme = config.DefaultTheme,
     StorageKey = config.StorageKey ? config.StorageKey : 'theme',
     DocumentAttributeKey = config.DocumentAttributeKey
@@ -106,11 +108,13 @@ export function ThemeProvider({ children, config }: ThemeProviderProps) {
 
   useEffect(() => {
     startCallback();
+    setIsLoadedTheme(false);
   }, [startCallback]);
 
   return (
     <ThemeContext.Provider
       value={{
+        isLoadedTheme,
         theme,
         setTheme,
         toggleThemeDefault,
