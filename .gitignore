@@ -4,3 +4,4 @@ node_modules
 .cache
 dist
 README_LIB.md
+ssh_key_paraphese
